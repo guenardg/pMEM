@@ -1,0 +1,294 @@
+## **************************************************************************
+##
+##    (c) 2023-2024 Guillaume Guénard
+##        Department de sciences biologiques,
+##        Université de Montréal
+##        Montreal, QC, Canada
+##
+##    **Borcard's Oribatid Mite Data Set - Geographic Information System
+##    Version - **
+##
+##    This file is part of pMEM
+##
+##    pMEM is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 3 of the License, or
+##    (at your option) any later version.
+##
+##    pMEM is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with pMEM. If not, see <https://www.gnu.org/licenses/>.
+##
+##    Data set documentation generation file
+##
+## **************************************************************************
+##
+#' Borcard's Oribatid Mite Data (GIS Version)
+#'
+#' Spatially-referenced oribatid mite community and environmental data from a
+#' peat bog surrounding Lac Geai, Québec, Canada.
+#' 
+#' @docType data
+#' 
+#' @keywords mite
+#' 
+#' @name geoMite
+#' 
+#' @format 
+#' \subsection{Data Description}{
+#'   A list with five \code{\link[sf]{sf}} data frames:
+#'   \itemize{
+#'     \item \strong{core}: A data frame with 70 rows (peat cores) containing
+#'     point geometries and 46 fields containing values of environmental
+#'     variables at the locations of the cores as well as the number of
+#'     individuals of one of 35 Oribatid species observed in the cores (see
+#'     details).
+#'     \item \strong{water}: A data frame with three rows containing polygon
+#'     geometries and a single field: a \code{\link{factor}} variable named
+#'     "Type" and specifying whether the polygon represents open water
+#'     (value == "Water") or flooded areas (value == "Flooded") at the time of
+#'     sampling.
+#'     \item \strong{substrate}: A data frame with 13 rows containing polygon
+#'     geometries and seven fields. The first field is a \code{\link{factor}}
+#'     that specifies one of six substrate classes (see details) and the
+#'     remaining six fields are binary variables for each of these six substrate
+#'     classes that take the value 1 when the polygon is of the class being
+#'     represented by the that variable and otherwise take the value 0.
+#'     \item \strong{shrub}: A data frame with four rows containing polygon
+#'     geometries and a single field: an \code{\link{ordered}} variable named
+#'     "Type" and specifying whether the polygon represents areas with no shrub
+#'     (value == "None"), a few shrubs (value == "Few"), or many shrubs
+#'     (value == "Many").
+#'     \item \strong{topo}: A data frame with four rows containing polygon
+#'     geometries and a single field: a \code{\link{factor}} variable named
+#'     "Type" and specifying the type of peat micro-topography. There are two
+#'     such types: "Blanket" (flat area) and "Hummock" (raised bumps).
+#'   }
+#' }
+#' 
+#' \subsection{Coordinate Reference System}{
+#'   All geometries use a local Cartesian coordinate system with units in
+#'   centimeters, oriented such that X increases from water edge to forest edge,
+#'   and Y increases along the shoreline. No projected CRS is assigned; treat
+#'   as a local grid for spatial modeling.
+#' }
+#' 
+#' @details 
+#' \subsection{Environmental Variables}{
+#'   Fields in \code{geoMite$core}:
+#'   \itemize{
+#'     \item \strong{SubsDens}: Substrate density (g/L)
+#'     \item \strong{WatrCont}: Water content of peat (g/L)
+#'     \item \strong{Substrate-*}: Six binary indicators for substrate type
+#'           (see substrate classification below)
+#'     \item \strong{Shrub}: Ordered factor (None < Few < Many) for shrub cover
+#'     \item \strong{Topo}: Factor with levels "Blanket" (flat) and "Hummock"
+#'     (raised)
+#'     \item \strong{Flooded}: Binary indicator of flooding at time of sampling
+#'     \item \strong{Species-*}: Counts of 35 oribatid species (morphological
+#'     identification)
+#'   }
+#' }
+#' 
+#' \subsection{Substrate Classification}{
+#'   Substrate types (non-exclusive; cores may span multiple types):
+#'   \itemize{
+#'     \item \strong{Sphagn1}: \emph{Sphagnum magellanicum} (majority) + \emph{S. rubellum}
+#'     \item \strong{Sphagn2}: \emph{Sphagnum rubellum}
+#'     \item \strong{Sphagn3}: \emph{Sphagnum nemoreum} (+ minority \emph{S. angustifolium})
+#'     \item \strong{Sphagn4}: \emph{S. rubellum} and \emph{S. magellanicum} in equal parts
+#'     \item \strong{Litter}: Ligneous plant litter
+#'     \item \strong{Barepeat}: Exposed peat without vegetation
+#'   }
+#'   
+#'   These types are not mutually exclusive categories: cores were sometimes
+#'   taken at the boundary between two or more substrate types and thus belong
+#'   to multiple categories.
+#' }
+#' 
+#' \subsection{Data Provenance}{
+#'   Polygon geometries were digitized from Figure 1 in Borcard et al. (1994)
+#'   using a 10 mm grid. Due to print resolution limits, effective positional
+#'   accuracy is approximately 10 cm in both X and Y directions.
+#' }
+#' 
+#' \subsection{Orientation}{
+#'   The X coordinates corresponds to distances going from the edge of the water
+#'   to the edge of the forest. The Y coordinates correspond the distances along
+#'   the lake's shore.
+#' }
+#' 
+#' \subsection{Taxonomic Resolution}{
+#'   The identification of the Oribatid species was carried out solely on the
+#'   basis of their morphology as little is known on the ecology of these small
+#'   animals.
+#' }
+#' 
+#' @seealso Data set \code{oribatid} from package \code{ade4}, which is another
+#' version of this data set.
+#'
+#' @author Daniel Borcard, <daniel.borcard@@umontreal.ca> and Pierre Legendre
+#' <pierre.legendre@@umontreal.ca>
+#' 
+#' @references
+#' Borcard, D. and Legendre, P. 1994. Environmental Control and Spatial
+#' Structure in Ecological Communities: An Example Using Oribatid Mites
+#' (Acari, Oribatei). Environ. Ecol. Stat. 1(1): 37-61 <doi:10.1007/BF00714196>
+#' 
+#' Borcard, D., Legendre, P., and Drapeau, P. 1992. Partialling out the spatial
+#' component of ecological variation. Ecology, 73, 1045-1055.
+#' \doi{10.2307/1940179}
+#' 
+#' Borcard, D.; Legendre, P.; and Gillet, F. 2018. Numerical Ecology with R
+#' (2nd Edition) Springer, Cham, Switzerland. \doi{10.1007/978-3-319-71404-2}
+#' 
+#' @examples
+#' data(geoMite)
+#' 
+#' ## Quick summary of species counts:
+#' species_cols <- grep("^Species\\.", names(geoMite$core), value = TRUE)
+#' 
+#' ## Maximum count per species
+#' sapply(st_drop_geometry(geoMite$core[species_cols]), max)
+#' #> Species.Brachysp Species.Hoplcfpa  Species.Oppinova ...
+#' #>               42                8                37 ...
+#' 
+#' ## Simple map of core locations over substrate:
+#' if(requireNamespace("sf", quietly = TRUE)) {
+#'   plot(st_geometry(geoMite$substrate), col = "lightgreen", main = "Peat Cores")
+#'   plot(st_geometry(geoMite$core), pch = 21, bg = "black", add = TRUE)
+#' }
+#' 
+#' \dontrun{
+#' 
+#' ## Color definitions:
+#' col <- list()
+#' col[["substrate"]] <- c(Sphagn1 = "#00ff00", Sphagn2 = "#fffb00",
+#'                         Sphagn3 = "#774b00", Sphagn4 = "#ff8400",
+#'                         Litter = "#ee00ff", Barepeat = "#ff0004")
+#' col[["water"]] <- c(Water = "#008cff", Flooded = "#ffffff00",
+#'                     core = "#000000ff")
+#' col[["shrub"]] <- c(None = "#dfdfdf", Few = "#a7a7a7", Many = "#5c5c5c")
+#' col[["topo"]] <- c(Blanket = "#74cd00", Hummock = "#bc9d00")
+#' 
+#' ## Graphical paramters:
+#' p <- par(no.readonly = TRUE)
+#' par(mar=c(0,0,1,0), mfrow=c(1L,4L))
+#' 
+#' ## Substrate:
+#' with(
+#'   geoMite,
+#'   {
+#'     plot(st_geometry(substrate), col=col[["substrate"]][substrate$Type],
+#'          main="Substrate")
+#'     plot(st_geometry(water[1,]), col=col[["water"]][water[1,]$Type],
+#'          add=TRUE)
+#'     plot(st_geometry(water[-1,]), col=col[["water"]][water[-1,]$Type],
+#'          lty=3L, add=TRUE)
+#'     plot(st_geometry(core), pch = 21, bg = "black", add=TRUE)
+#'   }
+#' )
+#' 
+#' ## Shrubs:
+#' with(
+#'   geoMite,
+#'   {
+#'     plot(st_geometry(shrub), col = col[["shrub"]][shrub$Type], main="Shrubs")
+#'     plot(st_geometry(water[1,]), col=col[["water"]][water[1,]$Type],
+#'          add=TRUE)
+#'     plot(st_geometry(water[-1,]), col=col[["water"]][water[-1,]$Type], lty=3,
+#'          add=TRUE)
+#'     plot(st_geometry(core), pch = 21, bg = "black", add=TRUE)
+#'   }
+#' )
+
+#' 
+#' ## Topograghy:
+#' with(
+#'   geoMite,
+#'   {
+#'     plot(st_geometry(topo), col = col[["topo"]][topo$Type],
+#'          main="Topography")
+#'     plot(st_geometry(water[1,]), col=col[["water"]][water[1,]$Type],
+#'          add=TRUE)
+#'     plot(st_geometry(water[-1,]), col=col[["water"]][water[-1,]$Type], lty=3,
+#'          add=TRUE)
+#'     plot(st_geometry(core), pch = 21, bg = "black", add=TRUE)
+#'   }
+#' )
+#' 
+#' ## Legends:
+#' with(
+#'   geoMite,
+#'   {
+#'     plot(NA, xlim=c(0,1), ylim=c(0,1), axes = FALSE)
+#'     legend(x=0, y=0.9, pch=22, pt.cex = 2.5, pt.bg=col[["substrate"]],
+#'            box.lwd = 0, legend=names(col[["substrate"]]), title="Substrate")
+#'     legend(x=-0.025, y=0.6, pch=c(22,NA,21), pt.cex=c(2.5,NA,1),
+#'            pt.bg=col[["water"]], box.lwd=0, lty=c(0L,3L,NA),
+#'            legend=c("Open water","Flooded area","Peat core"))
+#'     legend(x=0, y=0.4, pch=22, pt.cex=2.5, pt.bg=col[["shrub"]], box.lwd=0,
+#'            legend=names(col[["shrub"]]), title="Shrubs")
+#'     legend(x=0, y=0.2, pch=22, pt.cex=2.5, pt.bg=col[["topo"]], box.lwd=0,
+#'        legend=names(col[["topo"]]), title="Topography")
+#'   }
+#' )
+#' 
+#' ### Display the species counts
+#' 
+#' ## Get the species names:
+#' unlist(
+#'   lapply(
+#'     strsplit(colnames(geoMite$core),".",fixed=TRUE),
+#'     function(x) if(x[1L] == "Species") x[2L] else NULL
+#'   )
+#' ) -> spnms
+#' 
+#' ## See the maximum counts for all the species
+#' apply(st_drop_geometry(geoMite$core[,paste("Species",spnms,sep=".")]),2L,max)
+#' 
+#' ## Species selection to display:
+#' sel <- c("Brachysp","Hoplcfpa","Oppinova","Limncfci","Limncfru")
+#' 
+#' ## Range of counts to display:
+#' rng <- log1p(c(0,1000))
+#' 
+#' colmap <- grey(seq(1,0,length.out=256L))
+#' 
+#' ## Update the graphical parameters for this example
+#' par(mar=c(0,0,2,0), mfrow=c(1L,length(sel) + 1L))
+#' 
+#' with(
+#'   geoMite,
+#'   {
+#'     ## Display each species in the selection over the substrate map
+#'     for(sp in sel) {
+#'       plot(st_geometry(substrate), col=col[["substrate"]][substrate$Type],
+#'            main=sp)
+#'       plot(st_geometry(core), pch=21L, add = TRUE, cex=1.5,
+#'            bg=colmap[1 + 255*log1p(core[[paste("Species",sp,sep=".")]])/rng[2L]])
+#'     }
+#'   
+#'   
+#'   ## Display the colour chart for the species counts:
+#'   par(mar=c(2,7,3,1))
+#'   image(z=matrix(seq(0,log1p(1000),length.out=256L),1,256), col=colmap,
+#'         xaxt="n", yaxt="n", y=seq(0,log1p(1000),length.out=256), xlab="",
+#'         cex.lab=1.5,
+#'         ylab=expression(paste("Counts by species (",ind~core^{-1},")")))
+#'   axis(2, at=log1p(c(0,1,3,10,30,100,300,1000)), cex.axis = 1.5,
+#'        label=c(0,1,3,10,30,100,300,1000))
+#'   }
+#' )
+#' 
+#' ## Restore graphical parameters:
+#' par(p)
+#' }
+#' 
+#' @import sf
+#' 
+NULL

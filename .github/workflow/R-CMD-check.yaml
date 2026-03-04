@@ -1,0 +1,6 @@
+- name: Test coverage
+  run: |
+    Rscript -e 'install.packages("covr")'
+    Rscript -e 'covr::codecov()'
+  env:
+    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

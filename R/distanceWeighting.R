@@ -1,0 +1,121 @@
+## **************************************************************************
+##
+##    (c) 2023-2026 Guillaume Guénard
+##        Department de sciences biologiques,
+##        Université de Montréal
+##        Montreal, QC, Canada
+##
+##    **Distance Weighting Function**
+##
+##    This file is part of pMEM
+##
+##    pMEM is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 3 of the License, or
+##    (at your option) any later version.
+##
+##    pMEM is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with pMEM. If not, see <https://www.gnu.org/licenses/>.
+##
+##    R source code file
+##
+## **************************************************************************
+##
+#' Generate a Distance Weighting Function
+#' 
+#' \code{genDWF} returns a function that transforms pairwise distances into
+#' spatial weights, with support for both real and complex-valued distances.
+#' 
+#' @param fun Distance weighting function type. One of \code{"linear"},
+#'   \code{"power"}, \code{"hyperbolic"}, \code{"spherical"},
+#'   \code{"exponential"}, \code{"Gaussian"}, or \code{"hole_effect"}. Partial
+#'   matching is supported (e.g., \code{"exp"} for \code{"exponential"}).
+#' @param range Range parameter (positive numeric). For \code{"linear"},
+#'   \code{"power"}, \code{"hyperbolic"}, and \code{"spherical"}, this is the
+#'   distance beyond which weights equal 0. For \code{"exponential"},
+#'   \code{"Gaussian"}, and \code{"hole_effect"}, this is the scale parameter
+#'   controlling decay rate.
+#' @param shape Shape parameter (positive numeric). Used only for \code{"power"}
+#'   and \code{"hyperbolic"} functions; ignored otherwise. Default is \code{1}.
+#' 
+#' @returns A function with signature \code{function(d)} that transforms
+#' distances into weights. Returns a numeric vector for vector input, or a
+#' numeric/complex matrix for matrix input. For complex-valued distances (from
+#' asymmetric metrics), returns complex-valued weights.
+#' 
+#' @details All functions return 1 (or 1+0i) at distance 0. Behavior beyond
+#' varies.
+#' 
+#' \subsection{Complex-Valued Distances}{
+#'   When distances are complex (from asymmetric metrics via
+#'   \code{genDistMetric(delta)}), the weighting functions operate on the
+#'   modulus while preserving phase information. This enables directional
+#'   spatial modeling for transects or flow-influenced systems.
+#' }
+#' 
+#' \subsection{Function Generator Pattern}{
+#'   \code{genDWF} returns a closure embedding \code{fun}, \code{range}, and
+#'   \code{shape} in its environment. To change parameters, call
+#'   \code{genDWF} again with new arguments.
+#' }
+#' 
+#' @author \packageAuthor{pMEM}
+#' 
+#' @examples
+#' ## A set of distances from which to show the corresponding weights:
+#' d <- seq(0, 5, 0.1)
+#' 
+#' ## The linear function with different ranges:
+#' w <- cbind(
+#'   genDWF(fun = "linear", range = 1)(d),
+#'   genDWF(fun = "linear", range = 0.5)(d),
+#'   genDWF(fun = "linear", range = 2)(d)
+#' )
+#' dim(w)  # 51 × 3 matrix
+#' #> [1] 51    3
+#' 
+#' ## The exponential function:
+#' w <- genDWF(fun = "exponential", range = 1)(d)
+#' w[1:5]  # First 5 weights (starts at 1, decays)
+#' #> [1] 1.0000000 0.9048374 0.8187308 0.7408182 0.6703200
+#' 
+#' ## The hole_effect function (can go negative):
+#' w <- genDWF(fun = "hole_effect", range = 1)(d)
+#' range(w)  # Includes negative values
+#' #> [1] -0.2162362  1.0000000
+#' 
+#' ## Complex-valued distances (asymmetric metrics) with a delta of pi/8:
+#' d <- complex(modulus = seq(0, 5, 0.1), argument = pi/8)
+#' w <- genDWF(fun = "Gaussian", range = 1)(d)
+#' Mod(w[1:5])  # Modulus of complex weights
+#' #> 1.0000000 0.9929539 0.9721120 0.9383431 0.8930282
+#' Arg(w[1:5])  # Phase preserved from input distances
+#' #> 0.000000000 -0.007071068 -0.028284271 -0.063639610 -0.113137085
+#' 
+#' @importFrom Rcpp evalCpp
+#' 
+#' @useDynLib pMEM, .registration = TRUE
+#' 
+#' @export
+genDWF <- function(
+    fun = c("linear","power","hyperbolic","spherical", "exponential",
+            "Gaussian", "hole_effect"),
+    range,
+    shape = 1
+) {
+  fun <- match.arg(fun)
+  flist <- c("linear","power","hyperbolic","spherical","exponential",
+             "Gaussian", "hole_effect")
+  method <- which(flist == fun)
+  function(d)
+    if(is.complex(d)) {
+      .Call("pMEM_dwfCplx", PACKAGE="pMEM", d, method, c(range, shape))
+    } else
+      .Call("pMEM_dwfReal", PACKAGE="pMEM", d, method, c(range, shape))
+}
+#'

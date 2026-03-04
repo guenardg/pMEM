@@ -1,0 +1,15 @@
+bibentry(bibtype = "Article",
+  title        = "Spatially-explicit predictions using spatial eigenvector maps.",
+  author       = c(person(given = "Guillaume",
+                          family = "Gu\\'{e}nard",
+                          email = "guillaume.guenard@umontreal.ca"),
+                   person(given = "Pierre",
+                          family = "Legendre",
+                          email = "pierre.legendre@umontreal.ca")),
+  journal      = "Methods in Ecology and Evolution",
+  year         = "2024",
+  volume       = "15",
+  pages        = "2129--2140",
+  doi          = "10.1111/2041-210X.14413",
+  header       = "To cite pMEM in publications use:"
+)
