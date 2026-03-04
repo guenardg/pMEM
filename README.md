@@ -3,7 +3,6 @@
 <!-- Badges -->
 [![CRAN Status](https://www.r-pkg.org/badges/version/pMEM)](https://CRAN.R-project.org/package=pMEM)
 [![R-CMD-check](https://github.com/guenardg/pMEM/workflows/R-CMD-check/badge.svg)](https://github.com/guenardg/pMEM/actions)
-[![Codecov](https://codecov.io/gh/guenardg/pMEM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/guenardg/pMEM)
 [![Methods in Ecology and Evolution](https://img.shields.io/badge/DOI-10.1111/2041--210X.14413-blue)](https://doi.org/10.1111/2041-210X.14413)
 
 **pMEM** implements *Predictive Moran's Eigenvector Maps*, a method for
