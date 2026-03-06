@@ -32,10 +32,11 @@ Depends:
   R (>= 4.1.0),
   sf
 Suggests:
+  glmnet,
   knitr,
-  xfun,
   magrittr,
-  glmnet
+  rmarkdown,
+  xfun
 Imports:
   Rcpp (>= 1.0.11)
 License: GPL-3
