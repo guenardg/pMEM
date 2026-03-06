@@ -1,17 +1,12 @@
-# Workflow derived from https://github.com/r-lib/actions
-# Learn more about the actions at https://github.com/r-lib/actions/tree/v2/examples
-
-name: R-CMD-check
-
+# For help debugging build failures open an issue on the RStudio community with the 'github-actions' tag.
+# https://community.rstudio.com/new-topic?category=Package%20development&tags=github-actions
 on:
   push:
-    branches: [master]
+    branches: [main, master]
   pull_request:
-    branches: [master]
-  schedule:
-    # Weekly check to catch breaking changes in dependencies
-    - cron: '0 0 * * 0'
-  workflow_dispatch:  # Allow manual triggering
+    branches: [main, master]
+
+name: R-CMD-check
 
 jobs:
   R-CMD-check:
@@ -23,75 +18,40 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # Linux: Latest R + release
-          - {os: ubuntu-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'oldrel-1'}
-          # macOS: Latest R
-          - {os: macOS-latest, r: 'release'}
-          # Windows: Latest R + oldrel (common user platforms)
-          - {os: windows-latest, r: 'release'}
-          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest,  r: 'release'}
+          - {os: macOS-latest,    r: 'devel',   http-user-agent: 'release'}
+          - {os: macOS-latest,    r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel',   http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      # Suppress interactive prompts during checks
-      _R_CHECK_FORCE_SUGGESTS_: false
-      _R_CHECK_CRAN_INCOMING_: false
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      
+      - uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          use-public-rspm: true  # Faster package downloads on Linux
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
 
-      - name: Set up R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install libraries for macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install udunits geos gdal
+          
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: |
-            any::rcmdcheck
-            any::covr  # Optional: keep for local coverage, not uploaded
+          pak-version: devel
+          extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Session info (debugging)
-        run: |
-          Rscript -e "sessionInfo()"
-          Rscript -e "packageVersion('pMEM')"
-
-      - name: Check package
-        uses: r-lib/actions/check-r-package@v2
+      - uses: r-lib/actions/check-r-package@v2
         with:
-          upload-snapshots: true
-          build_args: 'c("--no-manual", "--no-build-vignettes")'
-          check_args: >-
-            --as-cran
-            --no-manual
-            --no-build-vignettes
-            --run-donttest
-            --run-dontrun
-          error-on: '"error"'  # Fail on ERROR, warn on WARNING/NOTE
-
-      - name: Show test output on failure
-        if: failure()
-        run: |
-          # Display check results for debugging
-          if [ -d "check" ]; then
-            echo "=== CHECK LOGS ==="
-            cat check/00check.log || true
-            echo -e "\n=== INSTALL LOGS ==="
-            cat check/00install.out || true
-            echo -e "\n=== TEST LOGS ==="
-            find check -name "*.Rout" -exec cat {} \; || true
-          fi
-
-      - name: Upload check results as artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: check-results-${{ runner.os }}-R${{ matrix.config.r }}
-          path: check
-          retention-days: 7
+          args: 'c("--no-manual", "--as-cran", "--run-dontrun")'
+          error-on: '"error"'
+          check-dir: '"check"'
