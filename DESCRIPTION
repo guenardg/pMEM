@@ -28,13 +28,21 @@ Description: Calculate Predictive Moran's Eigenvector Maps (pMEM) for
   Gaussian, linear) and features a modular architecture that allows programmers
   to define custom weighting functions. Designed for ecologists, geographers,
   and spatial analysts working with spatially-structured data.
-Depends: R (>= 3.5.0), sf
-Suggests: knitr, xfun, magrittr, glmnet
-Imports: Rcpp (>= 1.0.11)
+Depends:
+  R (>= 4.1.0),
+  sf
+Suggests:
+  knitr,
+  xfun,
+  magrittr,
+  glmnet
+Imports:
+  Rcpp (>= 1.0.11)
 License: GPL-3
 LazyLoad: yes
 NeedsCompilation: yes
 LinkingTo: Rcpp
-VignetteBuilder: knitr
+VignetteBuilder:
+  knitr
 Repository: CRAN
 RoxygenNote: 7.3.3

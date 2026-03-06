@@ -1,0 +1,8 @@
+# GitHub Actions workflow
+.github
+
+# Other common ignores
+^\.git$
+^\.gitignore$
+^\.Rproj\.user$
+^README\.md$
