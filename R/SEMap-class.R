@@ -328,10 +328,11 @@ genSEF <- function(x, m, f, tol = .Machine$double.eps^0.5) {
   w <- f(d)
   if(complex) {
     g <- .Call("pMEM_centerCplx", PACKAGE="pMEM", w, TRUE)
+    eigen(g$centered, symmetric = FALSE) -> eig
   } else {
     g <- .Call("pMEM_centerReal", PACKAGE="pMEM", w, TRUE)
+    eigen(g$centered, symmetric = TRUE) -> eig
   }
-  eigen(g$centered, symmetric = TRUE) -> eig
   eig$vectors <- eig$vectors[,abs(eig$values) > tol, drop=FALSE]
   eig$values <- eig$values[abs(eig$values) > tol]
   names(eig$values) <- paste("pMEM",1L:length(eig$values),sep="_")
